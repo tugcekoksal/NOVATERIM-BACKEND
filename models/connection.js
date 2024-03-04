@@ -1,7 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const connectionString = process.env.CONNECTION_STRING;
+const user = process.env.DB_USER;
+console.log(user); 
 
-mongoose.connect(connectionString, { connectTimeoutMS: 2000 })
- .then(() => console.log('Database connected'))
- .catch (error => console.error(error));
+let connectionString;
+
+if (user) connectionString = process.env.DB_JPO_CONNECTION_KEY; // To check with Raida
+console.log(connectionString);
+
+mongoose
+   .connect(connectionString, { connectTimeoutMS: 2000 })
+   .then(() => console.log("Database connected"))
+   .catch((error) => console.error(error));
+
+
+module.exports = connectionString;
