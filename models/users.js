@@ -45,8 +45,8 @@ const addressSchema = mongoose.Schema({
 });
 
 const userSchema = mongoose.Schema({
-   username: String,
    email: String,
+   username: String,
    password: String,
    token: String,
    identity: identitySchema,
