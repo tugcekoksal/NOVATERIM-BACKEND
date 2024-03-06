@@ -60,7 +60,7 @@ router.post("/signin", (req, res) => {
       res.json({ result: false, error: "Missing or empty fields" });
       return;
    }
-
+   
    User.findOne({ email: req.body.email }).then((data) => {
       if (bcrypt.compareSync(req.body.password, data.password)) {
          res.json({ result: true, data });
