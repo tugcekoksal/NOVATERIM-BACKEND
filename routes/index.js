@@ -47,8 +47,83 @@ router.post("/upload/:token/:document", async(req, res) => {
 			public_id: `${uniqid()}_pdf`
 		});
 		console.log(resultCloudinary);
-      res.json({ result: true, url: resultCloudinary.secure_url, name: resultCloudinary.original_filename });
-		User.updateOne({ })
+	/*
+   ======= Saving url document to DDB =======
+   */
+		switch(document) {
+			case 'identityCard':
+				User.updateOne(
+					{ token: token },
+					{
+						identityCard : resultCloudinary.secure_url,
+					}
+				).then(() => {
+					User.findOne({ identityCard: resultCloudinary.secure_url }).then((data) => {
+						if(data) {
+							res.json({ result: true, data, name: resultCloudinary.original_filename });
+						}
+					})
+				})
+				break;
+			case 'vitalCard':
+				User.updateOne(
+					{ token: token },
+					{
+						vitalCard : resultCloudinary.secure_url,
+					}
+				).then(() => {
+					User.findOne({ vitalCard: resultCloudinary.secure_url }).then((data) => {
+						if(data) {
+							res.json({ result: true, data, name: resultCloudinary.original_filename });
+						}
+					})
+				})
+				break;
+			case 'resume':
+				User.updateOne(
+					{ token: token },
+					{
+						resume : resultCloudinary.secure_url,
+					}
+				).then(() => {
+					User.findOne({ resume: resultCloudinary.secure_url }).then((data) => {
+						if(data) {
+							res.json({ result: true, data, name: resultCloudinary.original_filename });
+						}
+					})
+				})
+				break;
+			case 'iban':
+				User.updateOne(
+					{ token: token },
+					{
+						iban : resultCloudinary.secure_url,
+					}
+				).then(() => {
+					User.findOne({ iban: resultCloudinary.secure_url }).then((data) => {
+						if(data) {
+							res.json({ result: true, data, name: resultCloudinary.original_filename });
+						}
+					})
+				})
+				break;
+			case 'homePaper':
+				User.updateOne(
+					{ token: token },
+					{
+						homePaper : resultCloudinary.secure_url,
+					}
+				).then(() => {
+					User.findOne({ homePaper: resultCloudinary.secure_url }).then((data) => {
+						if(data) {
+							res.json({ result: true, data, name: resultCloudinary.original_filename });
+						}
+					})
+				})
+				break;
+			default:
+				res.json({ result: false, error: 'document is not in DataBase' });
+		}
    }else{
       res.json({ result: false, error: resultMove });
    }
