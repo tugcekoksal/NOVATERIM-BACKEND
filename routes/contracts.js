@@ -20,7 +20,7 @@ router.get('/:token', (req, res) => {
       // Check if the user has contracts
       if (user.contracts && user.contracts.length > 0) {
         res.json(user.contracts);
-        console.log(user.contracts);
+      
       } else {
         res.status(404).json({ message: 'No contracts found' });
       }
