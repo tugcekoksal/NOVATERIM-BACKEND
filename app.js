@@ -19,9 +19,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const contractsRouter = require('./routes/contracts');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/contracts', contractsRouter);
 
 
 
