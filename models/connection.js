@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 
-const user = process.env.DB_USER;
-console.log(user); 
 
-let connectionString;
-
-if (user) connectionString = process.env.DB_JPO_CONNECTION_KEY; // To check with Raida
+let connectionString = process.env.DB_USER; // To check with Raida
 console.log(connectionString);
 
 mongoose
