@@ -32,42 +32,42 @@ const contractSchema = mongoose.Schema({
 });
 
 const identitySchema = mongoose.Schema({
-   name: String,
-   firstName: String,
-   birthDate: String,
-   nationality: String,
-   countryBirth: String,
-   familySituation: String,
-   birthTown: String,
-   birthDistrict: String,
-   socialSecurityNumber: String,
-   phoneNumber: Number,
-});
+  name: String,
+  firstName: String,
+  birthDate: String,
+  nationality: String,
+  countryBirth: String,
+  familySituation: String,
+  birthTown: String,
+  birthDistrict: String,
+  socialSecurityNumber: Number,
+  phoneNumber: Number,
+  
+})
 
 const addressSchema = mongoose.Schema({
-   street: String,
-   zipCode: Number,
-   city: String,
-   country: String,
-});
+  street: String,
+  zipCode: String,
+  city: String,
+  country: String,
+})
 
 const userSchema = mongoose.Schema({
-   email: String,
-   username: String,
-   password: String,
-   token: String,
-   inscriptionDate: String,
-   identity: identitySchema,
-   addresses: addressSchema,
-   contracts: [contractSchema],
-   salary: [salarySchema],
-   parameters: parametersSchema,
-   identityCard: String,
-   vitalCard: String,
-   resume: String,
-   iban: String,
-   homePaper: String,
-});
+  email: String,
+  password: String,
+  token: String,
+  inscriptionDate: Date,
+  identity: identitySchema,
+  addresses: addressSchema,
+  contracts: [contractSchema],
+  salary: [salarySchema],
+  parameters: parametersSchema,
+  identityCard: String,
+  vitalCard: String,
+  cv: String,
+  iban: String,
+  homePaper: String,
+})
 
 const User = mongoose.model("users", userSchema);
 

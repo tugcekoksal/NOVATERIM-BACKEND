@@ -28,37 +28,37 @@ router.post("/signup", (req, res, next) => {
    // Check if the user has not already been registered
    const hash = bcrypt.hashSync(req.body.password, 10);
    const token = uid2(32);
-   console.log(req.body.email);
-   
-   User.findOne({ email: req.body.email }).then((data) => {
-      if (data.password) {
-         console.log(data.password);
-         res.json({ result: false, error: "The specified User already exists." });
-      }else{
-         User.updateOne(
-            { email: req.body.email },
-            {
-               password: hash,
-               token: token,
-               identity: {
-                  name: req.body.name,
-                  firstName: req.body.firstName,
-                  phoneNumber: Number(req.body.phoneNumber),
-               },
-            }
-         ).then(() => {
-            User.findOne({ email: req.body.email }).then((data) => {
-               if (data) {
-                  console.log(data);
-                  res.json({ result: true, data });
-               }
-            });
-         });
-
+   console.log(req.body.email)
+   User.updateOne(
+      { email: req.body.email },
+      { 
+         password: hash,
+         token: token,
+         inscriptionDate: new Date(),
+         identity: {
+            name: req.body.name,
+            firstName: req.body.firstName,
+            phoneNumber: Number(req.body.phoneNumber),
+         },
+         addresses: {
+            street: req.body.street,
+            zipCode: req.body.zipCode,
+            city: req.body.city,
+            country: req.body.country,
+         },
       }
-   })
+      ).then(() => {
+         User.findOne({ email: req.body.email }).then((data) => {
+            if (data) {
+               console.log(data)
+               res.json({ result: true, data });
+            } else {
+               // User already exists in database
+               res.json({ result: false, error: "User already exists" });
+            }
+      })
+   });
 
-   
 });
 
 /* Post route for signin */
@@ -78,26 +78,27 @@ router.post("/signin", (req, res) => {
 });
 router.put("/update/:token", async (req, res) => {
    try {
-      const token = req.params.token;
-      const updatedItem = req.body; // Les données à mettre à jour
-      console.log(token);
-      console.log(updatedItem);
-      console.log("hello from backend");
+       const token = req.params.token;
+       const updatedItem = req.body; // Les données à mettre à jour
+      
+       console.log(updatedItem)
+ 
 
-      // Find the user by token
-      const user = await User.findOne({ token: token });
+       // Find the user by token
+       const user = await User.findOne({ token: token });
+
       //  console.log(user)
       if (!user) {
          return res.status(404).json({ message: "User not found" });
       }
 
-      // Update the user
-      const result = await User.findByIdAndUpdate(user._id, updatedItem, {
-         new: true,
-      });
-      if (!result) {
-         return res.status(404).json({ message: "Update failed" });
-      }
+       // Update the user
+
+       const result = await User.findByIdAndUpdate(user._id,updatedItem , { new: true });
+ 
+       if (!result) {
+           return res.status(404).json({ message: 'Update failed' });
+       }
 
       res.status(200).json(result);
    } catch (error) {
