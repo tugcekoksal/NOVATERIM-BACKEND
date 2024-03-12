@@ -34,10 +34,17 @@ router.post("/signup", (req, res, next) => {
       { 
          password: hash,
          token: token,
+         inscriptionDate: new Date(),
          identity: {
             name: req.body.name,
             firstName: req.body.firstName,
             phoneNumber: Number(req.body.phoneNumber),
+         },
+         addresses: {
+            street: req.body.street,
+            zipCode: req.body.zipCode,
+            city: req.body.city,
+            country: req.body.country,
          },
       }
       ).then(() => {
@@ -75,19 +82,22 @@ router.put('/update/:token', async (req, res) => {
    try {
        const token = req.params.token;
        const updatedItem = req.body; // Les données à mettre à jour
-       console.log(token)
+      
        console.log(updatedItem)
-       console.log('hello from backend')
+ 
 
        // Find the user by token
        const user = await User.findOne({ token: token });
+
       //  console.log(user)
        if (!user) {
            return res.status(404).json({ message: 'User not found' });
        }
 
        // Update the user
-       const result = await User.findByIdAndUpdate(user._id, updatedItem, { new: true });
+
+       const result = await User.findByIdAndUpdate(user._id,updatedItem , { new: true });
+ 
        if (!result) {
            return res.status(404).json({ message: 'Update failed' });
        }

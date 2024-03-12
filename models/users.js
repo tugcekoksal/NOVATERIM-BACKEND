@@ -40,13 +40,14 @@ const identitySchema = mongoose.Schema({
   familySituation: String,
   birthTown: String,
   birthDistrict: String,
-  socialSecurityNumber: String,
+  socialSecurityNumber: Number,
   phoneNumber: Number,
+  
 })
 
 const addressSchema = mongoose.Schema({
   street: String,
-  zipCode: Number,
+  zipCode: String,
   city: String,
   country: String,
 })
@@ -55,8 +56,7 @@ const userSchema = mongoose.Schema({
   email: String,
   password: String,
   token: String,
-
-  inscriptionDate: String,
+  inscriptionDate: Date,
   identity: identitySchema,
   addresses: addressSchema,
   contracts: [contractSchema],
