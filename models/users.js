@@ -1,35 +1,35 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const parametersSchema = mongoose.Schema({
-  email: Boolean,
-  notification: Boolean,
-  sms: Boolean,
-  importantNotifications: Boolean,
-  informations: Boolean,
-})
+   email: Boolean,
+   notification: Boolean,
+   sms: Boolean,
+   importantNotifications: Boolean,
+   informations: Boolean,
+});
 
 const salarySchema = mongoose.Schema({
-  dates: String,
-  salary: Number,
-  urlPdf: String,
-})
+   dates: String,
+   salary: Number,
+   urlPdf: String,
+});
 
 const contractSchema = mongoose.Schema({
-  title: String,
-  role: String,
-  description: String,
-  duration: String,
-  location: String,
-  workingType: String,
-  company: String,
-  dates: String,
-  salary: String,
-  status: String,
-  endDate: String,
-  urlPdf: String,
-  reference: String,
-  isSignatureReady: String,
-})
+   title: String,
+   role: String,
+   description: String,
+   duration: String,
+   location: String,
+   workingType: String,
+   company: String,
+   dates: String,
+   salary: String,
+   status: String,
+   endDate: String,
+   urlPdf: String,
+   reference: String,
+   isSignatureReady: String,
+});
 
 const identitySchema = mongoose.Schema({
   name: String,
@@ -69,6 +69,6 @@ const userSchema = mongoose.Schema({
   homePaper: String,
 })
 
-const User = mongoose.model("users", userSchema)
+const User = mongoose.model("users", userSchema);
 
-module.exports = User
+module.exports = User;

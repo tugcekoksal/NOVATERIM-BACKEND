@@ -63,14 +63,12 @@ router.post("/signup", (req, res, next) => {
 
 /* Post route for signin */
 router.post("/signin", (req, res) => {
-
    if (!checkBody(req.body, ["email", "password"])) {
       res.json({ result: false, error: "Missing or empty fields" });
       return;
    }
-   
+
    User.findOne({ email: req.body.email }).then((data) => {
-     
       if (bcrypt.compareSync(req.body.password, data.password)) {
          res.json({ result: true, data });
       } else {
@@ -78,7 +76,7 @@ router.post("/signin", (req, res) => {
       }
    });
 });
-router.put('/update/:token', async (req, res) => {
+router.put("/update/:token", async (req, res) => {
    try {
        const token = req.params.token;
        const updatedItem = req.body; // Les données à mettre à jour
@@ -90,9 +88,9 @@ router.put('/update/:token', async (req, res) => {
        const user = await User.findOne({ token: token });
 
       //  console.log(user)
-       if (!user) {
-           return res.status(404).json({ message: 'User not found' });
-       }
+      if (!user) {
+         return res.status(404).json({ message: "User not found" });
+      }
 
        // Update the user
 
@@ -102,26 +100,26 @@ router.put('/update/:token', async (req, res) => {
            return res.status(404).json({ message: 'Update failed' });
        }
 
-       res.status(200).json(result);
+      res.status(200).json(result);
    } catch (error) {
-       res.status(500).json({ message: 'Error updating the user' });
+      res.status(500).json({ message: "Error updating the user" });
    }
 });
-router.get('/:token', async (req, res) => {
+router.get("/:token", async (req, res) => {
    try {
-       const token = req.params.token;
+      const token = req.params.token;
 
-       // Find the user by token
-       const user = await User.findOne({ token: token });
+      // Find the user by token
+      const user = await User.findOne({ token: token });
 
-       if (!user) {
-           return res.status(404).json({ message: 'User not found' });
-       }
+      if (!user) {
+         return res.status(404).json({ message: "User not found" });
+      }
 
-       // Return the user information
-       res.status(200).json(user);
+      // Return the user information
+      res.status(200).json(user);
    } catch (error) {
-       res.status(500).json({ message: 'Error retrieving the user' });
+      res.status(500).json({ message: "Error retrieving the user" });
    }
 });
 
