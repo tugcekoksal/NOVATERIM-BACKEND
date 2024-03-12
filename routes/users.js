@@ -29,35 +29,35 @@ router.post("/signup", (req, res, next) => {
    const hash = bcrypt.hashSync(req.body.password, 10);
    const token = uid2(32);
    console.log(req.body.email)
-   User.updateOne(
-      { email: req.body.email },
-      { 
-         password: hash,
-         token: token,
-         inscriptionDate: new Date(),
-         identity: {
-            name: req.body.name,
-            firstName: req.body.firstName,
-            phoneNumber: Number(req.body.phoneNumber),
-         },
-         addresses: {
-            street: req.body.street,
-            zipCode: req.body.zipCode,
-            city: req.body.city,
-            country: req.body.country,
-         },
-      }
-      ).then(() => {
-         User.findOne({ email: req.body.email }).then((data) => {
-            if (data) {
-               console.log(data)
-               res.json({ result: true, data });
-            } else {
-               // User already exists in database
-               res.json({ result: false, error: "User already exists" });
+   
+   User.findOne({ email: req.body.email }).then((data) => {
+
+      if (data.password) {
+         console.log(data.password);
+         res.json({ result: false, error: "The specified User already exists." });
+      }else{
+         User.updateOne(
+            { email: req.body.email },
+            {
+               password: hash,
+               token: token,
+               identity: {
+                  name: req.body.name,
+                  firstName: req.body.firstName,
+                  phoneNumber: Number(req.body.phoneNumber),
+               },
             }
-      })
-   });
+         ).then(() => {
+            User.findOne({ email: req.body.email }).then((data) => {
+               if (data) {
+                  console.log(data);
+                  res.json({ result: true, data });
+               }
+            });
+         });
+
+      }
+   })
 
 });
 

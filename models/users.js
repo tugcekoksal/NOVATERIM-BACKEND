@@ -64,7 +64,7 @@ const userSchema = mongoose.Schema({
   parameters: parametersSchema,
   identityCard: String,
   vitalCard: String,
-  cv: String,
+  resume: String,
   iban: String,
   homePaper: String,
 })
