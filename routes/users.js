@@ -1,126 +1,148 @@
 /*
 ============ Import express ============ 
 */
-const express = require("express");
-const router = express.Router();
+const express = require("express")
+const router = express.Router()
 /*
 ============ Import uid2 for user token ============ 
 */
-const uid2 = require("uid2");
+const uid2 = require("uid2")
 /*
 ============ Import bcrypt password cryptography ============ 
 */
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt")
 /*
 ============ Import User model and connection ============ 
 */
-require("../models/connection");
-const User = require("../models/users");
-const { checkBody } = require("../modules/checkBody");
+require("../models/connection")
+const User = require("../models/users")
+const { checkBody } = require("../modules/checkBody")
 
 /* Post route for signUp */
 router.post("/signup", (req, res, next) => {
-   if (!checkBody(req.body, ["firstName", "password"])) {
-      res.json({ result: false, error: "Missing or empty fields" });
-      return;
-   }
+  if (!checkBody(req.body, ["firstName", "password"])) {
+    res.json({ result: false, error: "Missing or empty fields" })
+    return
+  }
 
-   // Check if the user has not already been registered
-   const hash = bcrypt.hashSync(req.body.password, 10);
-   const token = uid2(32);
-   console.log(req.body.email)
-   User.updateOne(
-      { email: req.body.email },
-      { 
-         password: hash,
-         token: token,
-         inscriptionDate: new Date(),
-         identity: {
-            name: req.body.name,
-            firstName: req.body.firstName,
-            phoneNumber: Number(req.body.phoneNumber),
-         },
-         addresses: {
-            street: req.body.street,
-            zipCode: req.body.zipCode,
-            city: req.body.city,
-            country: req.body.country,
-         },
+  // Check if the user has not already been registered
+  const hash = bcrypt.hashSync(req.body.password, 10)
+  const token = uid2(32)
+  console.log(req.body.email)
+  User.updateOne(
+    { email: req.body.email },
+    {
+      password: hash,
+      token: token,
+      inscriptionDate: new Date(),
+      identity: {
+        name: req.body.name,
+        firstName: req.body.firstName,
+        phoneNumber: Number(req.body.phoneNumber),
+      },
+      addresses: {
+        street: req.body.street,
+        zipCode: req.body.zipCode,
+        city: req.body.city,
+        country: req.body.country,
+      },
+      
+    }
+  ).then(() => {
+    User.findOne({ email: req.body.email }).then((data) => {
+      if (data) {
+        console.log(data)
+        res.json({ result: true, data })
+      } else {
+        // User already exists in database
+        res.json({ result: false, error: "User already exists" })
       }
-      ).then(() => {
-         User.findOne({ email: req.body.email }).then((data) => {
-            if (data) {
-               console.log(data)
-               res.json({ result: true, data });
-            } else {
-               // User already exists in database
-               res.json({ result: false, error: "User already exists" });
-            }
-      })
-   });
-
-});
+    })
+  })
+})
 
 /* Post route for signin */
 router.post("/signin", (req, res) => {
-   if (!checkBody(req.body, ["email", "password"])) {
-      res.json({ result: false, error: "Missing or empty fields" });
-      return;
-   }
+  if (!checkBody(req.body, ["email", "password"])) {
+    res.json({ result: false, error: "Missing or empty fields" })
+    return
+  }
 
-   User.findOne({ email: req.body.email }).then((data) => {
-      if (bcrypt.compareSync(req.body.password, data.password)) {
-         res.json({ result: true, data });
-      } else {
-         res.json({ result: false, error: "User not found" });
-      }
-   });
-});
+  User.findOne({ email: req.body.email }).then((data) => {
+    if (bcrypt.compareSync(req.body.password, data.password)) {
+      res.json({ result: true, data })
+    } else {
+      res.json({ result: false, error: "User not found" })
+    }
+  })
+})
 router.put("/update/:token", async (req, res) => {
-   try {
-       const token = req.params.token;
-       const updatedItem = req.body; // Les données à mettre à jour
-      
-       console.log(updatedItem)
- 
+  try {
+    const token = req.params.token
+    const updatedItem = req.body // Les données à mettre à jour
 
-       // Find the user by token
-       const user = await User.findOne({ token: token });
+    console.log(updatedItem)
 
-      //  console.log(user)
-      if (!user) {
-         return res.status(404).json({ message: "User not found" });
-      }
+    // Find the user by token
+    const user = await User.findOne({ token: token })
 
-       // Update the user
+    //  console.log(user)
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
+    }
 
-       const result = await User.findByIdAndUpdate(user._id,updatedItem , { new: true });
- 
-       if (!result) {
-           return res.status(404).json({ message: 'Update failed' });
-       }
+    // Update the user
 
-      res.status(200).json(result);
-   } catch (error) {
-      res.status(500).json({ message: "Error updating the user" });
-   }
-});
+    const result = await User.findByIdAndUpdate(user._id, updatedItem, {
+      new: true,
+    })
+
+    if (!result) {
+      return res.status(404).json({ message: "Update failed" })
+    }
+
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(500).json({ message: "Error updating the user" })
+  }
+})
 router.get("/:token", async (req, res) => {
-   try {
-      const token = req.params.token;
+  try {
+    const token = req.params.token
 
-      // Find the user by token
-      const user = await User.findOne({ token: token });
+    // Find the user by token
+    const user = await User.findOne({ token: token })
 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
+    }
+
+    // Return the user information
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving the user" })
+  }
+})
+router.get("/salaries/:token", (req, res) => {
+  User.findOne({ token: req.params.token })
+    .select("salaries")
+    .then((user) => {
+      // Check if user was found
       if (!user) {
-         return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" })
       }
 
-      // Return the user information
-      res.status(200).json(user);
-   } catch (error) {
-      res.status(500).json({ message: "Error retrieving the user" });
-   }
-});
+      // Check if the user has contracts
+      if (user.salaries && user.salaries.length > 0) {
+        res.json(user.salaries)
+      } else {
+        res.status(404).json({ message: "No salary found" })
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+      res.status(500).json({ message: "Server error" })
+    })
+})
 
-module.exports = router;
+module.exports = router

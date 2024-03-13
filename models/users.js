@@ -60,11 +60,11 @@ const userSchema = mongoose.Schema({
   identity: identitySchema,
   addresses: addressSchema,
   contracts: [contractSchema],
-  salary: [salarySchema],
+  salaries: [salarySchema],
   parameters: parametersSchema,
   identityCard: String,
   vitalCard: String,
-  cv: String,
+  resume: String,
   iban: String,
   homePaper: String,
 })

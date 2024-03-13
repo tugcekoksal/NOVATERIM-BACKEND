@@ -5,7 +5,7 @@ console.log(user);
 
 let connectionString;
 
-if (user) connectionString = process.env.DB_USER; // To check with Raida
+if (user) connectionString = process.env.DB_USER;
 console.log(connectionString);
 
 mongoose
