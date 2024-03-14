@@ -44,7 +44,7 @@ router.post("/upload/:token/:document", async(req, res) => {
 	if(!resultMove){
       const resultCloudinary = await cloudinary.uploader.upload(documentPath, { 
 			folder: `NOVATERIM/users/${username}`,
-			public_id: `${uniqid()}_pdf`
+			public_id: `${document}_pdf`
 		});
 		console.log(resultCloudinary);
 	/*
@@ -60,7 +60,7 @@ router.post("/upload/:token/:document", async(req, res) => {
 				).then(() => {
 					User.findOne({ identityCard: resultCloudinary.secure_url }).then((data) => {
 						if(data) {
-							res.json({ result: true, data, name: resultCloudinary.original_filename });
+							res.json({ result: true, identityCard: resultCloudinary.secure_url });
 						}
 					})
 				})
@@ -74,7 +74,7 @@ router.post("/upload/:token/:document", async(req, res) => {
 				).then(() => {
 					User.findOne({ vitalCard: resultCloudinary.secure_url }).then((data) => {
 						if(data) {
-							res.json({ result: true, data, name: resultCloudinary.original_filename });
+							res.json({ result: true, vitalCard: resultCloudinary.secure_url });
 						}
 					})
 				})
@@ -88,7 +88,7 @@ router.post("/upload/:token/:document", async(req, res) => {
 				).then(() => {
 					User.findOne({ resume: resultCloudinary.secure_url }).then((data) => {
 						if(data) {
-							res.json({ result: true, data, name: resultCloudinary.original_filename });
+							res.json({ result: true, resume: resultCloudinary.secure_url });
 						}
 					})
 				})
@@ -102,7 +102,7 @@ router.post("/upload/:token/:document", async(req, res) => {
 				).then(() => {
 					User.findOne({ iban: resultCloudinary.secure_url }).then((data) => {
 						if(data) {
-							res.json({ result: true, data, name: resultCloudinary.original_filename });
+							res.json({ result: true, iban: resultCloudinary.secure_url });
 						}
 					})
 				})
@@ -116,7 +116,7 @@ router.post("/upload/:token/:document", async(req, res) => {
 				).then(() => {
 					User.findOne({ homePaper: resultCloudinary.secure_url }).then((data) => {
 						if(data) {
-							res.json({ result: true, data, name: resultCloudinary.original_filename });
+							res.json({ result: true, homePaper: resultCloudinary.secure_url });
 						}
 					})
 				})
