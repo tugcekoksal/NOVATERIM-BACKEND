@@ -67,6 +67,7 @@ const userSchema = mongoose.Schema({
   resume: String,
   iban: String,
   homePaper: String,
+  profileImg: String,
 })
 
 const User = mongoose.model("users", userSchema);

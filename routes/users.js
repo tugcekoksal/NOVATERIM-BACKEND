@@ -14,9 +14,19 @@ const bcrypt = require("bcrypt")
 /*
 ============ Import User model and connection ============ 
 */
-require("../models/connection")
-const User = require("../models/users")
-const { checkBody } = require("../modules/checkBody")
+require("../models/connection");
+const User = require("../models/users");
+const { checkBody } = require("../modules/checkBody");
+/*
+============ Import uniqid, cloudinary and fs module ============ 
+*/
+const uniqid = require("uniqid");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+
+const cloudinary_KEY = process.env.CLOUDINARY_URL;
+
+
 
 /* Post route for signUp */
 router.post("/signup", (req, res, next) => {
@@ -25,41 +35,47 @@ router.post("/signup", (req, res, next) => {
     return
   }
 
-  // Check if the user has not already been registered
-  const hash = bcrypt.hashSync(req.body.password, 10)
-  const token = uid2(32)
-  console.log(req.body.email)
-  User.updateOne(
-    { email: req.body.email },
-    {
-      password: hash,
-      token: token,
-      inscriptionDate: new Date(),
-      identity: {
-        name: req.body.name,
-        firstName: req.body.firstName,
-        phoneNumber: Number(req.body.phoneNumber),
-      },
-      addresses: {
+   // Check if the user has not already been registered
+   const hash = bcrypt.hashSync(req.body.password, 10);
+   const token = uid2(32);
+   console.log(req.body.email)
+   
+   User.findOne({ email: req.body.email }).then((data) => {
+
+      if (data.password) {
+         console.log(data.password);
+         res.json({ result: false, error: "The specified User already exists." });
+      }else{
+         User.updateOne(
+            { email: req.body.email },
+            {
+               password: hash,
+               token: token,
+               identity: {
+                  name: req.body.name,
+                  firstName: req.body.firstName,
+                  phoneNumber: Number(req.body.phoneNumber),
+               },
+                addresses: {
         street: req.body.street,
         zipCode: req.body.zipCode,
         city: req.body.city,
         country: req.body.country,
       },
-      
-    }
-  ).then(() => {
-    User.findOne({ email: req.body.email }).then((data) => {
-      if (data) {
-        console.log(data)
-        res.json({ result: true, data })
-      } else {
-        // User already exists in database
-        res.json({ result: false, error: "User already exists" })
+            }
+         ).then(() => {
+            User.findOne({ email: req.body.email }).then((data) => {
+               if (data) {
+                  console.log(data);
+                  res.json({ result: true, data });
+               }
+            });
+         });
+
       }
-    })
-  })
-})
+   })
+
+});
 
 /* Post route for signin */
 router.post("/signin", (req, res) => {
