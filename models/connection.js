@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 
+<<<<<<< HEAD
 
 
 let connectionString = process.env.DB_USER;
+=======
+let connectionString = process.env.DB_USER; 
+>>>>>>> tugce
 console.log(connectionString);
 
 mongoose
