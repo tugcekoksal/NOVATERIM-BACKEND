@@ -17,6 +17,16 @@ const bcrypt = require("bcrypt");
 require("../models/connection");
 const User = require("../models/users");
 const { checkBody } = require("../modules/checkBody");
+/*
+============ Import uniqid, cloudinary and fs module ============ 
+*/
+const uniqid = require("uniqid");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+
+const cloudinary_KEY = process.env.CLOUDINARY_URL;
+
+
 
 /* Post route for signUp */
 router.post("/signup", (req, res, next) => {
@@ -122,5 +132,49 @@ router.get("/:token", async (req, res) => {
       res.status(500).json({ message: "Error retrieving the user" });
    }
 });
+
+/* Put route for updating profile img */
+router.post("/update/profile-img/:token", async (req, res) => {
+
+   const token = req.params.token;
+   const document = 'profileIMG';
+   console.log(token);
+
+   const file = req.files.imgFile;
+   const username = file.name + '-';
+
+   const imagePath = `./tmp/${uniqid()}.pdf`;
+   const resultMove = await req.files.imgFile.mv(imagePath);
+
+   if(!resultMove){
+      const resultCloudinary = await cloudinary.uploader.upload(imagePath, { 
+			folder: `NOVATERIM/users/${username}`,
+			public_id: `${document}_pdf`
+		});
+		console.log(resultCloudinary);
+
+      /*
+      ======= Saving url document to DDB =======
+      */
+      User.updateOne(
+         { token: token },
+         {
+            profileImg : resultCloudinary.secure_url,
+         }
+      ).then(() => {
+         User.findOne({ profileImg: resultCloudinary.secure_url }).then((data) => {
+            if(data) {
+               res.json({ result: true, profileImg: resultCloudinary.secure_url });
+            }
+         })
+      })
+   }else{
+      res.json({ result: false, error: resultMove });
+   }
+
+   fs.unlinkSync(imagePath);
+
+
+})
 
 module.exports = router;
