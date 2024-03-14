@@ -56,21 +56,12 @@ router.post("/signup", (req, res, next) => {
                   firstName: req.body.firstName,
                   phoneNumber: Number(req.body.phoneNumber),
                },
-<<<<<<< HEAD
-                addresses: {
-        street: req.body.street,
-        zipCode: req.body.zipCode,
-        city: req.body.city,
-        country: req.body.country,
-      },
-=======
                addresses: {
                 street: req.body.street,
                 zipCode: req.body.zipCode,
                 city: req.body.city,
                 country: req.body.country,
               },
->>>>>>> tugce
             }
          ).then(() => {
             User.findOne({ email: req.body.email }).then((data) => {
@@ -85,11 +76,8 @@ router.post("/signup", (req, res, next) => {
    })
 
 });
-<<<<<<< HEAD
-=======
 
 
->>>>>>> tugce
 
 /* Post route for signin */
 router.post("/signin", (req, res) => {
